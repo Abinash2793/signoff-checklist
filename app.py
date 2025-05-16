@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import date
-
+from streamlit_drawable_canvas import st_canvas
+from PIL import Image
 st.set_page_config(page_title="Site Sign-Off Checklist", layout="centered")
 
 st.title("📝 Site Sign-Off Checklist")
@@ -129,8 +130,7 @@ if st.session_state.form_filled:
                 checked = st.checkbox(sub_item, key=sub_item)
                 checklist_data.append((sub_item, checked))
 
-    from streamlit_drawable_canvas import st_canvas
-    from PIL import Image
+
 
     st.caption("✍️ Please sign below — must not be left blank.")
 
