@@ -116,7 +116,7 @@ if "form_filled" not in st.session_state:
 if st.button("Next Step"):
     st.session_state.form_filled = True
 
-# ✅ Show checklist after form submission
+# ✅ Show checklist and signature canvases after form submission
 if st.session_state.form_filled:
     st.success("Form filled successfully. Now complete the checklist below.")
 
@@ -129,52 +129,49 @@ if st.session_state.form_filled:
                 checked = st.checkbox(sub_item, key=sub_item)
                 checklist_data.append((sub_item, checked))
 
-from streamlit_drawable_canvas import st_canvas
-from PIL import Image
+    from streamlit_drawable_canvas import st_canvas
+    from PIL import Image
 
-st.subheader("📌 Subcontractor Signature")
+    st.caption("✍️ Please sign below — must not be left blank.")
 
-# Create a canvas component
-canvas_result = st_canvas(
-    fill_color="rgba(255, 255, 255, 0)",  # Transparent background
-    stroke_width=2,
-    stroke_color="#000000",
-    background_color="#ffffff",
-    height=150,
-    width=400,
-    drawing_mode="freedraw",
-    key="signature",
-)
+    st.subheader("📌 Subcontractor Signature")
+    canvas_result = st_canvas(
+        fill_color="rgba(255, 255, 255, 0)",  # Transparent background
+        stroke_width=2,
+        stroke_color="#000000",
+        background_color="#ffffff",
+        height=150,
+        width=400,
+        drawing_mode="freedraw",
+        key="signature",
+    )
 
-# Capture the signature image if drawn
-signature_img_path = None
-if canvas_result.image_data is not None:
-    signature_img = Image.fromarray(canvas_result.image_data.astype("uint8"))
-    
-    # Save temporary PNG
-    signature_img_path = "signature.png"
-    signature_img.save(signature_img_path)
-st.subheader("📌 CH Foreman Signature")
+    # Capture the subcontractor signature if drawn
+    signature_img_path = None
+    if canvas_result.image_data is not None and canvas_result.image_data.any():
+        signature_img = Image.fromarray(canvas_result.image_data.astype("uint8"))
+        signature_img_path = "signature.png"
+        signature_img.save(signature_img_path)
 
-canvas_result_foreman = st_canvas(
-    fill_color="rgba(255, 255, 255, 0)",  # Transparent background
-    stroke_width=2,
-    stroke_color="#000000",
-    background_color="#ffffff",
-    height=150,
-    width=400,
-    drawing_mode="freedraw",
-    key="foreman_signature",
-)
+    st.subheader("📌 CH Foreman Signature")
+    canvas_result_foreman = st_canvas(
+        fill_color="rgba(255, 255, 255, 0)",  # Transparent background
+        stroke_width=2,
+        stroke_color="#000000",
+        background_color="#ffffff",
+        height=150,
+        width=400,
+        drawing_mode="freedraw",
+        key="foreman_signature",
+    )
 
-# Capture CH Foreman signature image
-foreman_signature_img_path = None
-if canvas_result_foreman.image_data is not None:
-    foreman_signature_img = Image.fromarray(canvas_result_foreman.image_data.astype("uint8"))
-    
-    # Save temporary PNG
-    foreman_signature_img_path = "foreman_signature.png"
-    foreman_signature_img.save(foreman_signature_img_path)
+    # Capture the foreman signature if drawn
+    foreman_signature_img_path = None
+    if canvas_result_foreman.image_data is not None and canvas_result_foreman.image_data.any():
+        foreman_signature_img = Image.fromarray(canvas_result_foreman.image_data.astype("uint8"))
+        foreman_signature_img_path = "foreman_signature.png"
+        foreman_signature_img.save(foreman_signature_img_path)
+
 
 import os
 from docx import Document
