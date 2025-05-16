@@ -154,6 +154,28 @@ if canvas_result.image_data is not None:
     # Save temporary PNG
     signature_img_path = "signature.png"
     signature_img.save(signature_img_path)
+st.subheader("📌 CH Foreman Signature")
+
+canvas_result_foreman = st_canvas(
+    fill_color="rgba(255, 255, 255, 0)",  # Transparent background
+    stroke_width=2,
+    stroke_color="#000000",
+    background_color="#ffffff",
+    height=150,
+    width=400,
+    drawing_mode="freedraw",
+    key="foreman_signature",
+)
+
+# Capture CH Foreman signature image
+foreman_signature_img_path = None
+if canvas_result_foreman.image_data is not None:
+    foreman_signature_img = Image.fromarray(canvas_result_foreman.image_data.astype("uint8"))
+    
+    # Save temporary PNG
+    foreman_signature_img_path = "foreman_signature.png"
+    foreman_signature_img.save(foreman_signature_img_path)
+
 import os
 from docx import Document
 from docx.shared import Inches, Pt
@@ -219,11 +241,16 @@ if st.button("Generate DOCX and Save"):
 
 
 
-    # ========== SIGNATURE ========== #
+    # ========== SIGNATURES ========== #
     doc.add_paragraph()
     doc.add_paragraph("Subcontractor Signature:")
     if signature_img_path and os.path.exists(signature_img_path):
         doc.add_picture(signature_img_path, width=Inches(2))
+
+    doc.add_paragraph()
+    doc.add_paragraph("CH Foreman Signature:")
+    if foreman_signature_img_path and os.path.exists(foreman_signature_img_path):
+        doc.add_picture(foreman_signature_img_path, width=Inches(2))
 
     # ========== SAVE .DOCX (No PDF conversion) ========== #
     filename_base = f"{checklist_type}_{project_name}_{unit_number}_{inspection_date}"
@@ -237,6 +264,8 @@ if st.button("Generate DOCX and Save"):
     # Clean up
     if signature_img_path and os.path.exists(signature_img_path):
         os.remove(signature_img_path)
+    if foreman_signature_img_path and os.path.exists(foreman_signature_img_path):
+        os.remove(foreman_signature_img_path)
 
     st.success(f"✅ Checklist saved as Word file at:\n{final_path}")
 
