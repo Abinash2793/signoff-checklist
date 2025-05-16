@@ -3,6 +3,17 @@ from datetime import date
 from streamlit_drawable_canvas import st_canvas
 from PIL import Image
 st.set_page_config(page_title="Site Sign-Off Checklist", layout="centered")
+if "submitted" not in st.session_state:
+    st.session_state.submitted = False
+
+if st.session_state.submitted:
+    st.success("✅ Form submitted and saved successfully!")
+    st.balloons()
+    st.session_state.submitted = False  # reset flag
+    import time
+    time.sleep(2)
+    st.experimental_rerun()
+
 
 st.title("📝 Site Sign-Off Checklist")
 
@@ -265,4 +276,5 @@ if st.button("Generate DOCX and Save"):
         os.remove(foreman_signature_img_path)
 
     st.success(f"✅ Checklist saved as Word file at:\n{final_path}")
+    st.session_state.submitted = True
 
